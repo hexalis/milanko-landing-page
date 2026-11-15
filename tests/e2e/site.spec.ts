@@ -51,7 +51,7 @@ test('the question leads to evidence, then the event, then the late invitation',
       await expect(desk.locator('[data-verdict]')).toHaveText(verdict);
       await expect(invitation).toBeVisible();
       await expect(page.locator('#historia .real-case')).toContainText(/Svalbard/);
-      await expect(page.locator('#historia .case-action')).toHaveAttribute('href', 'https://milanko.hexalis.org/app');
+      await expect(page.locator('#historia .case-action')).toHaveAttribute('href', '/app');
       await desk.locator('[data-reset]:visible').press('Enter');
     }
   }

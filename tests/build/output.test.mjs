@@ -18,6 +18,8 @@ test('Spanish and English routes, local resources and alternates exist', async (
     assert.match(html, /name="robots" content="noindex, follow"/);
     for (const [, href] of html.matchAll(/(?:href|src)="(\/[^"]*)"/g)) {
       const url = new URL(href.replaceAll('&amp;', '&'), 'https://example.com');
+      // The application is served at /app by the host, next to this static output; it is not built here.
+      if (url.pathname === '/app' || url.pathname.startsWith('/app/')) continue;
       await access('dist' + url.pathname + (url.pathname.endsWith('/') ? 'index.html' : ''));
       if (route.endsWith('/index.html') && url.hash && url.pathname === (route.includes('/en/') ? '/en/' : '/')) assert.ok(html.includes('id="' + url.hash.slice(1) + '"'));
     }
