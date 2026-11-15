@@ -1,0 +1,112 @@
+name: Landing CI/CD
+
+# Lightweight, self-contained pipeline: validate and build, then sync dist/ to the VPS.
+# No Docker, no Playwright, no server-side build.
+
+on:
+  push:
+    branches: [main, develop, qa]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validate and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+        env:
+          SITE_URL: https://example.com
+
+  deploy:
+    name: Deploy ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
+    needs: build
+    if: |
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      contains(fromJSON('["develop","qa","main"]'), github.ref_name)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
+    concurrency:
+      group: deploy-landing-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for the environment
+        run: npm run build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+
+      - name: Prepare SSH
+        shell: bash
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST || vars.DEPLOY_HOST }}
+          SSH_PORT: ${{ vars.DEPLOY_SSH_PORT || 22 }}
+        run: |
+          set -euo pipefail
+          : "${SSH_KEY:?DEPLOY_SSH_KEY is required}"
+          : "${KNOWN_HOSTS:?DEPLOY_KNOWN_HOSTS is required}"
+          : "${HOST:?DEPLOY_HOST is required}"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Sync dist to the VPS
+        shell: bash
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST || vars.DEPLOY_HOST }}
+          USER_NAME: ${{ vars.DEPLOY_USER }}
+          SSH_PORT: ${{ vars.DEPLOY_SSH_PORT || 22 }}
+          REMOTE_PATH: ${{ vars.DEPLOY_REMOTE_PATH }}
+        run: |
+          set -euo pipefail
+          : "${HOST:?DEPLOY_HOST is required}"
+          : "${USER_NAME:?DEPLOY_USER is required}"
+          : "${REMOTE_PATH:?DEPLOY_REMOTE_PATH is required}"
+          test -d dist || { echo "dist/ is missing" >&2; exit 1; }
+
+          SSH="ssh -i ~/.ssh/deploy_key -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes"
+          TARGET="$USER_NAME@$HOST"
+
+          $SSH "$TARGET" "mkdir -p '$REMOTE_PATH'"
+          rsync -az --delete -e "$SSH" dist/ "$TARGET:$REMOTE_PATH/"
+          $SSH "$TARGET" "find '$REMOTE_PATH' -type d -exec chmod 755 {} +; find '$REMOTE_PATH' -type f -exec chmod 644 {} +"
+          $SSH "$TARGET" "test -f '$REMOTE_PATH/index.html' && test -f '$REMOTE_PATH/en/index.html'"
+          echo "landing deployed to $REMOTE_PATH"

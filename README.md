@@ -15,7 +15,7 @@ npm run verify
 npm run test:e2e
 ```
 
-Production output is `dist/`. Set `SITE_URL` to the approved origin before building for publication. The placeholder origin intentionally emits noindex and disallows crawling. No product demo URL, analytics, forms or backend is invented.
+Production output is `dist/`. Set `SITE_URL` to the approved origin before building for publication. The landing is served at `/` (Spanish) and `/en/` (English); the application is served at `/app`. The placeholder origin intentionally emits noindex and disallows crawling.
 
 ## Ownership
 
@@ -28,7 +28,7 @@ Production output is `dist/`. Set `SITE_URL` to the approved origin before build
 
 The geographic selector is an illustrative interaction. It rotates the Earth and describes a question; it does not fetch measurements or calculate trends. Motion controls and event selection work without WebGL. Without JavaScript, the local poster, a worked example and the application link remain available.
 
-The guided investigation starts with a question about temperature or rainfall. Visitors compare five simulated regional records, identify matching evidence and reveal the associated event. Four planets then introduce modules from the [POC research](https://github.com/hexalis/poc-research-design-concept/tree/f90d218/portal). The Arctic case box follows the investigation. Completing a case reveals the invitation to try real records there. Its public link is pending.
+The guided investigation starts with a question about temperature or rainfall. Visitors compare five simulated regional records, identify matching evidence and reveal the associated event. Four planets then introduce modules from the [POC research](https://github.com/hexalis/poc-research-design-concept/tree/f90d218/portal). The Arctic case box follows the investigation. Completing a case reveals the invitation to try real records there; the public application link is `/app`.
 
 ## References and assets
 

@@ -1,6 +1,6 @@
 export type Locale = 'es' | 'en';
 
-export const appUrl = 'https://milanko.hexalis.org/app';
+export const appUrl = '/app';
 
 export const ui = {
   es: {

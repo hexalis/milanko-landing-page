@@ -21,7 +21,7 @@
   "faq": [
     {
       "question": "¿Ya puedo usar Milanko?",
-      "answer": "Aquí puedes practicar con registros simulados, sin conexión a datos en vivo. El acceso a la aplicación se anunciará en esta página."
+      "answer": "Aquí puedes practicar con registros simulados. Abre la aplicación completa en /app para investigar con los datos reales."
     },
     {
       "question": "¿Qué preguntas puedo investigar?",
