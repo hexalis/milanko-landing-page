@@ -1,0 +1,117 @@
+{
+  "title": "Explora la Tierra como detective en Milanko",
+  "description": "Investiga dos preguntas sobre el clima con Milanko. Sigue las pistas de la temperatura y la lluvia hasta los registros históricos de NASA POWER.",
+  "hero": {
+    "text": "¿En qué región llovió más de lo habitual? En tu primer caso en Milanko, seguirás esa pista hasta descubrir qué ocurrió.",
+    "action": "Investigar mi primer caso"
+  },
+  "chapters": [
+    {
+      "id": "observa",
+      "title": "Elige tu primera pregunta.",
+      "text": "¿Te intriga la lluvia o la temperatura? Elige un tema y abre la pregunta que quieres investigar."
+    },
+    {
+      "id": "historia",
+      "title": "Tu próximo caso usa datos reales.",
+      "text": "¿Hace más calor en Svalbard que antes?",
+      "detail": "En Milanko podrás recorrer año por año los registros de temperatura de NASA POWER y ver cómo se llegó a la conclusión."
+    }
+  ],
+  "faq": [
+    {
+      "question": "¿Ya puedo usar Milanko?",
+      "answer": "Aquí puedes practicar con registros simulados, sin conexión a datos en vivo. El acceso a la aplicación se anunciará en esta página."
+    },
+    {
+      "question": "¿Qué preguntas puedo investigar?",
+      "answer": "Puedes buscar dónde la lluvia o la temperatura estuvieron por encima, por debajo o dentro de lo habitual. Al encontrar una pista, descubres a qué acontecimiento pertenece."
+    },
+    {
+      "question": "¿De dónde saldrán las pistas?",
+      "answer": "La landing usa valores simulados para practicar la comparación. En la aplicación, los expedientes de acontecimientos cruzan el catálogo EONET con series históricas de NASA POWER."
+    },
+    {
+      "question": "¿Cómo se leerá el veredicto?",
+      "answer": "Verás si el registro está dentro o fuera del rango habitual y cuánto marca. Después puedes revisar la variable, el periodo y la fuente. Un valor inusual por sí solo no identifica la causa del evento."
+    },
+    {
+      "question": "¿Qué pasa si las pistas son insuficientes?",
+      "answer": "El caso puede quedar sin una conclusión firme. Por ejemplo, si la lluvia varía mucho entre años, los registros podrían admitir tanto un aumento como una disminución."
+    },
+    {
+      "question": "¿Es una aplicación oficial de la NASA?",
+      "answer": "No. Es un proyecto independiente de Hexalis para NASA Space Apps. No está afiliado a la NASA ni cuenta con su respaldo."
+    }
+  ],
+  "investigation": {
+    "subject": "¿Qué quieres medir?",
+    "topic": [
+      "Temperatura",
+      "Lluvia"
+    ],
+    "filter": "Elige tu pregunta",
+    "directions": [
+      "Por encima de lo habitual",
+      "Por debajo de lo habitual",
+      "Dentro de lo habitual"
+    ],
+    "questions": [
+      [
+        "¿Dónde hizo más calor de lo habitual?",
+        "¿Dónde hizo más frío de lo habitual?",
+        "¿Dónde se mantuvo la temperatura en su rango habitual?"
+      ],
+      [
+        "¿Dónde llovió más de lo habitual?",
+        "¿Dónde llovió menos de lo habitual?",
+        "¿Dónde cayó la cantidad habitual de lluvia?"
+      ]
+    ],
+    "regions": {
+      "atlantic": "Atlántico",
+      "sahara": "Sáhara",
+      "pacific": "Pacífico sur",
+      "canada": "Canadá",
+      "australia": "Australia"
+    },
+    "instructions": "El registro cubre los 90 días anteriores al fenómeno. Si esos días van de enero a marzo, lo habitual se calcula con los meses de enero a marzo de otros años.",
+    "region": "Región",
+    "reading": "Registro",
+    "baseline": "Rango habitual",
+    "miss": "El registro de {region} es de {value}, {position}. Prueba otra región para encontrar la señal que buscas.",
+    "match": "¡Pista encontrada en {region}! El registro de {value} está {position}.",
+    "finish": "Abrir el expediente del fenómeno",
+    "result": "Fenómeno simulado en esta región",
+    "settings": "Cómo llegaste al hallazgo",
+    "again": "Investigar otra pregunta",
+    "fallback": "En el Pacífico sur se acumularon 370 mm en 90 días. El rango habitual para esas fechas era de 210 a 320 mm.",
+    "staticTitle": "Resolver el caso de lluvia",
+    "staticAnswer": "La lluvia superó la franja habitual por 50 mm. El expediente corresponde a una tormenta tropical simulada en el Pacífico. La comparación describe el periodo anterior al evento.",
+    "next": "Ver el adelanto de Svalbard",
+    "cause": "La comparación indica si esos 90 días fueron inusuales. Encontrar esta pista antes del fenómeno no demuestra qué lo causó.",
+    "preview": "Tu pregunta",
+    "sample": "Registro simulado",
+    "measure": [
+      "Media de las temperaturas máximas diarias",
+      "Lluvia acumulada"
+    ],
+    "revise": "Cambiar la pregunta",
+    "period": "Periodo de comparación",
+    "periodValue": "Comparamos los 90 días previos con las mismas fechas del calendario en años anteriores. Por ejemplo, si el registro va de enero a marzo, buscamos esos meses en los demás años.",
+    "source": "Origen de la pista",
+    "sourceValue": "Valores didácticos simulados. En la POC, los expedientes de eventos combinan el catálogo EONET y los registros de NASA POWER.",
+    "lens": "Examinar la marca con la lupa",
+    "above": "La marca está {gap} por encima del extremo superior de la franja ({limit}).",
+    "below": "La marca está {gap} por debajo del extremo inferior de la franja ({limit}).",
+    "between": "La marca de {value} cae dentro de la franja de {range}.",
+    "readTable": "¿Cómo comparo los registros?",
+    "hints": [
+      "Examina una región cuyo registro supere el número más alto de su rango habitual.",
+      "Examina una región cuyo registro sea menor que el número más bajo de su rango habitual.",
+      "Examina una región cuyo registro esté entre los dos números de su rango habitual."
+    ],
+    "inspectRegion": "Examinar",
+    "compare": "Comparar con {region}"
+  }
+}

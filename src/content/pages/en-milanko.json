@@ -1,0 +1,117 @@
+{
+  "title": "Explore Earth as a detective in Milanko",
+  "description": "Investigate two climate questions with Milanko. Follow clues about temperature and rain back to historical records from NASA POWER.",
+  "hero": {
+    "text": "Where did it rain more than usual? In your first Milanko case, follow that clue to discover what happened.",
+    "action": "Investigate my first case"
+  },
+  "chapters": [
+    {
+      "id": "observa",
+      "title": "Choose your first question.",
+      "text": "Pick rainfall or temperature. Then choose the question you want to investigate."
+    },
+    {
+      "id": "historia",
+      "title": "Your next case uses real data.",
+      "text": "Has Svalbard warmed over the years?",
+      "detail": "In Milanko you can follow the temperature record from NASA POWER year by year and see how the investigators reached their conclusion."
+    }
+  ],
+  "faq": [
+    {
+      "question": "Can I use Milanko yet?",
+      "answer": "You can practice here with simulated records. Access to the application will be announced on this page."
+    },
+    {
+      "question": "Which questions can I investigate?",
+      "answer": "Look for places where rainfall or temperature fell above, below or within the usual range. When you find a clue, you discover which event it belongs to."
+    },
+    {
+      "question": "Where will the clues come from?",
+      "answer": "The landing uses simulated values to practice the comparison. Event files in the app pair the EONET catalog with historical series from NASA POWER."
+    },
+    {
+      "question": "How will I read the verdict?",
+      "answer": "You’ll see the reading and whether it falls inside or outside the usual range. Then you can review the variable, time window and source. An unusual reading alone cannot identify the cause of an event."
+    },
+    {
+      "question": "What if the clues are inconclusive?",
+      "answer": "A case can remain open. For example, if rainfall varies widely from year to year, the records may be consistent with either an increase or a decrease."
+    },
+    {
+      "question": "Is this an official NASA app?",
+      "answer": "No. This is an independent Hexalis project for NASA Space Apps. It is not affiliated with or endorsed by NASA."
+    }
+  ],
+  "investigation": {
+    "subject": "What do you want to measure?",
+    "topic": [
+      "Temperature",
+      "Rainfall"
+    ],
+    "filter": "Choose your question",
+    "directions": [
+      "Above the usual range",
+      "Below the usual range",
+      "Within the usual range"
+    ],
+    "questions": [
+      [
+        "Where was it warmer than usual?",
+        "Where was it cooler than usual?",
+        "Where did temperatures stay within their usual range?"
+      ],
+      [
+        "Where did it rain more than usual?",
+        "Where did it rain less than usual?",
+        "Where did the usual amount of rain fall?"
+      ]
+    ],
+    "regions": {
+      "atlantic": "Atlantic",
+      "sahara": "Sahara",
+      "pacific": "South Pacific",
+      "canada": "Canada",
+      "australia": "Australia"
+    },
+    "instructions": "The reading covers the 90 days before the event. If those days fall in January through March, we compare them with January through March in other years.",
+    "region": "Region",
+    "reading": "Reading",
+    "baseline": "Usual range",
+    "miss": "The reading in {region} is {value}, {position}. Try another region to find the pattern in your question.",
+    "match": "A match in {region}! The reading of {value} falls {position}.",
+    "finish": "Open the event file",
+    "result": "Simulated event in this region",
+    "settings": "How you reached this finding",
+    "again": "Investigate another question",
+    "fallback": "In the South Pacific, 370 mm of rain fell in 90 days. The usual range for those dates was 210 to 320 mm.",
+    "staticTitle": "Solve the rainfall case",
+    "staticAnswer": "Rainfall was 50 mm above the usual band. The file belongs to a simulated tropical storm in the Pacific. The comparison describes the period leading up to the event.",
+    "next": "Preview the Svalbard case",
+    "cause": "This comparison tells you how unusual those 90 days were. Finding this pattern before an event does not tell us what caused it.",
+    "preview": "Your question",
+    "sample": "Simulated record",
+    "measure": [
+      "Average daily high temperature",
+      "Total rainfall"
+    ],
+    "revise": "Change the question",
+    "period": "Comparison period",
+    "periodValue": "We compare the 90 days before the event with the same calendar window in previous years. For example, a January–March window is compared with January–March in other years.",
+    "source": "Source of the clue",
+    "sourceValue": "Simulated values for this exercise. In the POC, event files combine the EONET catalog with NASA POWER records.",
+    "lens": "Inspect the mark with the magnifier",
+    "above": "The mark is {gap} above the upper edge of the band ({limit}).",
+    "below": "The mark is {gap} below the lower edge of the band ({limit}).",
+    "between": "The mark at {value} sits inside the band of {range}.",
+    "readTable": "How do I compare the readings?",
+    "hints": [
+      "Examine a region whose reading is higher than the top of its usual range.",
+      "Examine a region whose reading is lower than the bottom of its usual range.",
+      "Examine a region whose reading falls between the ends of its usual range."
+    ],
+    "inspectRegion": "Examine",
+    "compare": "Compare with {region}"
+  }
+}

@@ -1,0 +1,7 @@
+---
+import { getEntry } from 'astro:content';
+import LandingView from '../../views/LandingView.astro';
+const entry = await getEntry('pages', 'en-milanko');
+if (!entry) throw new Error('English Milanko content is missing');
+---
+<LandingView content={entry.data} locale="en" />

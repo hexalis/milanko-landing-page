@@ -1,0 +1,15 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import EarthJourney from '../components/sections/EarthJourney.astro';
+import Evidence from '../components/sections/Evidence.astro';
+import Questions from '../components/sections/Questions.astro';
+import type { Locale } from '../lib/i18n';
+interface Props { content: CollectionEntry<'pages'>['data']; locale: Locale }
+const { content, locale } = Astro.props;
+---
+<SiteLayout title={content.title} description={content.description} locale={locale}>
+  <EarthJourney hero={content.hero} chapters={content.chapters} investigation={content.investigation} locale={locale} />
+  <Evidence locale={locale} />
+  <Questions items={content.faq} locale={locale} />
+</SiteLayout>

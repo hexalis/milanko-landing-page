@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="t">
+  <title id="t">Milanko · imagotipo vertical</title>
+  <!-- Proporción áurea: ancho del logotipo = ancho del isotipo × φ. -->
+  <!-- Imagotipo vertical: el logotipo mide el ancho del isotipo × φ (1.618); separación = altura de mayúscula -->
+  <g transform="translate(97.3 49) scale(0.62000)">
+  <!-- Isotipo -->
+    <g fill="none" stroke="currentColor" stroke-width="48" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Vector "pro": pierna izquierda de la M sobre el eje de oblicuidad 23.5°, sube y baja hacia el nodo -->
+      <path d="M88.3 384 L199.7 128 L219.6 242.6"/>
+      <!-- Vector "contra": sale del nodo, sube y baja por la pierna derecha, paralela al eje 23.5° -->
+      <path d="M282.5 263.3 L423.7 128 L312.3 384"/>
+    </g>
+    <!-- Nodo de anomalía: el pulso que interrumpe la línea de tiempo y la divide en dos vectores -->
+    <circle cx="231.7" cy="312" r="30.4" fill="#c2410c" style="fill: var(--milanko-anomaly, #c2410c)"/>
+  </g>
+  <g transform="translate(68.1 350.2) scale(0.48308)">
+  <!-- Logotipo -->
+    <g fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="butt" stroke-linejoin="round">
+      <!-- M: el valle central llega al 58 % de la altura, como el pulso del isotipo -->
+      <path transform="translate(0 0)" d="M0 100V0L48 58 96 0V100"/>
+      <!-- I -->
+      <path transform="translate(146 0)" d="M0 0V100"/>
+      <!-- L (avance reducido: su pie se mete bajo la A) -->
+      <path transform="translate(196 0)" d="M0 0V100H60"/>
+      <!-- A sin travesaño: un pico de anomalía (Λ) -->
+      <path transform="translate(280 0)" d="M0 100 46 0 92 100"/>
+      <!-- N -->
+      <path transform="translate(422 0)" d="M0 100V0L80 100V0"/>
+      <!-- K -->
+      <path transform="translate(552 0)" d="M0 0V100M74 0 0 60M30 42 76 100"/>
+      <!-- O: círculo completo, la órbita -->
+      <path transform="translate(678 0)" d="M50 0A50 50 0 1 1 50 100A50 50 0 1 1 50 0Z"/>
+    </g>
+  </g>
+</svg>

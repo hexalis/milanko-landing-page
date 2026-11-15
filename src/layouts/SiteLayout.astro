@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import SeoHead from '../components/seo/SeoHead.astro';
+import Brand from '../components/ui/Brand.astro';
+import { ui, type Locale } from '../lib/i18n';
+interface Props { title: string; description: string; locale: Locale; noindex?: boolean }
+const { title, description, locale, noindex = false } = Astro.props;
+const copy = ui[locale];
+const root = locale === 'en' ? '/en/' : '/';
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#080c18" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <SeoHead title={title} description={description} locale={locale} noindex={noindex} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{copy.skip}</a>
+    <header class="site-header"><div class="wrap header-inner">
+      <a class="brand" href={root} aria-label={copy.home}><Brand /></a>
+      <nav aria-label={locale === 'es' ? 'Principal' : 'Main'}><a href={root + '#observa'}>{copy.nav[0]}</a><a href={root + '#evidencia'}>{copy.nav[1]}</a><a href={root + '#preguntas'}>{copy.nav[2]}</a></nav>
+      <div class="header-actions"><div class="language-switch" aria-label={locale === 'es' ? 'Idioma' : 'Language'}><a href="/" lang="es" aria-current={locale === 'es' ? 'page' : undefined}>ES</a><span aria-hidden="true">/</span><a href="/en/" lang="en" aria-current={locale === 'en' ? 'page' : undefined}>EN</a></div><a class="header-link" href="https://github.com/hexalis">{copy.team} <span aria-hidden="true">↗</span></a></div>
+    </div></header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer wrap">
+      <div class="footer-top">
+        <a class="brand" href={root} aria-label={copy.home}><Brand /></a>
+        <p>{copy.footerLine1}<br />{copy.footerLine2}</p>
+        <a href="https://hexalis.org/">{copy.project} <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="footer-bottom">
+        <p>{copy.independence}</p>
+        <a href="https://visibleearth.nasa.gov/collection/1484/blue-marble">{copy.earthCredit}</a>
+        <a href="https://github.com/mrdoob/three.js/tree/dev/examples/textures/planets">{copy.moonCredit}</a>
+        <a href="https://www.solarsystemscope.com/textures/">{copy.skyCredit}</a>
+        <span>© {new Date().getUTCFullYear()} Milanko</span>
+      </div>
+    </footer>
+  </body>
+</html>
+<style>
+  .header-actions{display:flex;align-items:center;gap:30px}.language-switch{display:flex;align-items:center;gap:8px;font-size:13px;white-space:nowrap}.language-switch a{color:var(--muted);padding:8px 2px}.language-switch a[aria-current=page]{color:var(--anomaly);font-weight:600}.language-switch a:hover{color:white}
+  @media(max-width:760px){.header-actions{gap:10px}.language-switch{gap:5px;font-size:12px}}
+</style>

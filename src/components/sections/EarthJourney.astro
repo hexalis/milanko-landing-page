@@ -1,0 +1,86 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Investigation from './Investigation.astro';
+import { places } from '../../lib/earth-state';
+import { appUrl, placeCopy, ui, type Locale } from '../../lib/i18n';
+interface Props { investigation: CollectionEntry<'pages'>['data']['investigation']; hero: CollectionEntry<'pages'>['data']['hero']; chapters: CollectionEntry<'pages'>['data']['chapters']; locale: Locale }
+const { hero, chapters, investigation, locale } = Astro.props;
+const copy = ui[locale];
+---
+<div class="earth-journey" id="recorrido">
+  <div class="planet-stage" aria-hidden="true">
+    <div class="planet-fallback"><img src="/textures/earth-day.jpg" alt="" width="2048" height="1024" fetchpriority="high" /></div>
+    <canvas id="earth-canvas"></canvas>
+    <span class="planet-caption">{copy.planet}<span>{copy.planetTag}</span></span>
+  </div>
+  <section class="hero chapter wrap" id="inicio" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <div class="mission-mark" aria-hidden="true"><span>MK / 01</span><i></i><span>23.5°</span></div>
+      <h1 id="hero-title">{copy.headline1}<br /><span>{copy.headline2}</span></h1>
+      <p class="hero-intro">{hero.text}</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#observa">{hero.action} <span aria-hidden="true">↓</span></a>
+        <a class="text-link" href="#evidencia">{copy.exploreSpace} <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="development-note">{copy.development}</p>
+    </div>
+    <div class="hero-bottom"><span>{copy.motto}</span><a href="#observa"><span aria-hidden="true">↓</span> {copy.scroll}</a></div>
+  </section>
+  <section class="chapter story wrap" id={chapters[0]!.id} aria-labelledby="observe-title">
+    <div class="story-copy reveal">
+      <div class="chapter-mark" aria-hidden="true">01 <span>──── ✦</span></div>
+      <h2 id="observe-title">{chapters[0]!.title}</h2>
+      <p class="serif-intro">{chapters[0]!.text}</p>
+      <Investigation copy={investigation} />
+      <details data-atlas hidden><summary>{copy.choose}</summary>
+      <fieldset id="explorar" class="location-picker" disabled>
+        <legend>{locale === 'es' ? 'Acontecimientos simulados' : 'Simulated events'}</legend>
+        {Object.keys(places).map(key => <button type="button" data-place={key} data-name={placeCopy[locale][key as keyof typeof places][0]} aria-pressed="false">{placeCopy[locale][key as keyof typeof places][0]} <span aria-hidden="true">↗</span></button>)}
+      </fieldset>
+      <button type="button" id="reset-view" class="reset-view" hidden>{copy.reset}</button>
+      <div class="location-readout" aria-live="polite" aria-atomic="true">
+        <span id="place-coordinates" class="telemetry">{copy.global}</span>
+        <p id="place-description">{copy.chooseHint}</p>
+      </div>
+      <p class="fine-print">{copy.phenomenaNote}</p>
+      </details>
+    </div>
+  </section>
+  <section class="chapter story horizon wrap" id={chapters[1]!.id} aria-labelledby="history-title">
+    <div class="story-copy reveal">
+      <section class="real-case" id="aplicacion" aria-labelledby="history-title">
+        <div class="archive-band"><img src="/imagotipo-horizontal.svg" width="134" alt="Milanko" /><p class="archive-tab">{locale === 'es' ? 'Archivo de Svalbard' : 'Svalbard archive'}</p></div>
+        <h2 id="history-title"><span data-before-invitation>{chapters[1]!.title}</span><span data-invitation hidden>{locale === 'es' ? 'Prueba con datos reales.' : 'Try it with real data.'}</span></h2>
+        <p class="archive-question">{chapters[1]!.text}</p>
+        <p class="archive-note">{chapters[1]!.detail}</p>
+        <a class="case-action" href={appUrl}>{locale === 'es' ? 'Explorar Milanko' : 'Explore Milanko'} <span aria-hidden="true">↗</span></a>
+      </section>
+      <a class="text-link" href="#evidencia">{copy.openViewer} <span aria-hidden="true">↓</span></a>
+    </div>
+  </section>
+  <div class="motion-controls wrap">
+    <button type="button" id="motion-toggle" aria-pressed="false" hidden><span id="motion-label">{copy.pause}</span><span aria-hidden="true">Ⅱ</span></button>
+    <span>{copy.sceneNote}</span>
+  </div>
+</div>
+<script>
+  import '../../scripts/experience';
+</script>
+
+<style>
+  [data-atlas] summary { min-height:44px; padding:.75rem 0; color:var(--atmosphere); cursor:pointer; }
+  .real-case { --inset:clamp(1.3rem,3.5vw,3rem); position:relative; padding:0 var(--inset) var(--inset); margin-bottom:1.25rem; background:linear-gradient(145deg,#152943 0%,#0d1d34 58%,#172d46 100%); color:#e8f4ff; border:1px solid #74a4ca80; border-radius:14px; overflow:hidden; box-shadow:0 22px 55px #0207168c,inset 0 1px #cae7ff26; }
+  .real-case::before { content:''; position:absolute; inset:auto -12% -42% 42%; aspect-ratio:1; border:1px solid #8fd0ff44; border-radius:50%; box-shadow:0 0 0 34px #8fd0ff0a,0 0 80px #4e9bd529; pointer-events:none; }
+  .archive-band { display:flex; justify-content:space-between; align-items:center; gap:.5rem; margin:0 calc(-1 * var(--inset)) 1.8rem; padding:.75rem var(--inset); background:#0a1324c9; border-bottom:1px solid #ff9b6688; }
+  .archive-band img { width:clamp(100px,10vw,140px); height:auto; }
+  .archive-tab { color:#b8dff9; font:.78rem/1.35 var(--font-mono); text-align:right; }
+  .real-case h2 { position:relative; max-width:15ch; font-size:clamp(2.25rem,4.2vw,4.25rem); color:#f4f8ff; }
+  .archive-question { margin-top:1.4rem; font:1.5rem/1.35 var(--font-serif); }
+  .archive-note { position:relative; margin:.75rem 0 1.6rem; max-width:48ch; color:#c4d8e9; }
+  .case-action { position:relative; display:inline-flex; align-items:center; gap:.55rem; min-height:48px; padding:.65rem 1rem; border:1px solid #ff9a63; border-radius:999px; color:#101a2c; background:#ff9a63; font-weight:700; text-decoration:none; box-shadow:0 8px 22px #ff8a4c42; }
+  .case-action:hover { background:#ffc099; border-color:#ffc099; }
+  .case-action:focus-visible { outline:2px solid #d5efff; outline-offset:3px; }
+  :global(body:has(.static-case[open])) [data-invitation][hidden] { display:inline!important; }
+  :global(body:has(.static-case[open])) [data-before-invitation] { display:none; }
+  #explorar { scroll-margin-top: 6rem; }
+</style>

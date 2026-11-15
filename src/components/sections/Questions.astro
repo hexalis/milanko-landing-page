@@ -1,0 +1,23 @@
+---
+import { ui, type Locale } from '../../lib/i18n';
+interface Props { items: { question: string; answer: string }[]; locale: Locale }
+const { items, locale } = Astro.props;
+const copy = ui[locale];
+---
+<section class="closing section-space" aria-labelledby="closing-title">
+  <div class="twinkling-stars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <div class="closing-emblem" aria-hidden="true"><img src="/isotipo-milanko.svg" alt="" width="80" height="80" /><span></span></div>
+    <h2 id="closing-title">{copy.closing1}<br />{copy.closing2}</h2>
+    <p>{copy.closingText}</p>
+    <a class="button primary" href="https://hexalis.org/">{copy.closingAction} <span aria-hidden="true">↗</span></a>
+    <a class="closing-secondary" href="https://github.com/hexalis">{copy.github} <span aria-hidden="true">↗</span></a>
+  </div>
+</section>
+<section class="questions section-space" id="preguntas" aria-labelledby="questions-title">
+  <div class="twinkling-stars" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="wrap questions-inner">
+    <div><h2 id="questions-title">{copy.faqTitle}</h2><p class="secondary">{copy.faqIntro}</p></div>
+    <div class="question-list">{items.map((item, index) => <details name="questions"><summary><small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div>
+  </div>
+</section>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="t">
+  <title id="t">Milanko · isotipo</title>
+  <!-- Grilla X = 32 (512/16). M oblicua: piernas a 23.5° de la vertical; trazo 1.5X; nodo r 0.95X; área de seguridad 2X incluida en el lienzo. -->
+  <g fill="none" stroke="#ffffff" stroke-width="48" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Vector "pro": pierna izquierda de la M sobre el eje de oblicuidad 23.5°, sube y baja hacia el nodo -->
+    <path d="M88.3 384 L199.7 128 L219.6 242.6"/>
+    <!-- Vector "contra": sale del nodo, sube y baja por la pierna derecha, paralela al eje 23.5° -->
+    <path d="M282.5 263.3 L423.7 128 L312.3 384"/>
+  </g>
+  <!-- Nodo de anomalía: el pulso que interrumpe la línea de tiempo y la divide en dos vectores -->
+  <circle cx="231.7" cy="312" r="30.4" fill="#ff8a4c" style="fill: var(--milanko-anomaly, #ff8a4c)"/>
+</svg>

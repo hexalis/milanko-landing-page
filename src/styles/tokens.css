@@ -1,0 +1,7 @@
+:root {
+  --space-deep: #080c18; --space-canvas: #0a0e1c; --space-surface: #11182e; --space-border: #232d48;
+  --ink: #fff; --muted: #b4bdd2; --blue: #7a9feb; --atmosphere: #8bd5ff; --anomaly: #ff8a4c; --anomaly-dark: #c2410c; --paper: #f5f7fa;
+  --ease-out: cubic-bezier(.23,1,.32,1); --ease-in-out: cubic-bezier(.77,0,.175,1);
+  --font-sans: 'IBM Plex Sans',sans-serif; --font-serif: 'Source Serif 4',Georgia,serif; --font-mono: 'JetBrains Mono',monospace;
+  color-scheme: dark;
+}
