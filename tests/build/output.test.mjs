@@ -25,3 +25,18 @@ test('Spanish and English routes, local resources and alternates exist', async (
     }
   }
 });
+
+test('Landing routes expose a localized Open Graph and Twitter preview', async () => {
+  for (const [route, locale, ogLocale] of [['dist/index.html', 'es', 'es_ES'], ['dist/en/index.html', 'en', 'en_US']]) {
+    const html = await readFile(route, 'utf8');
+    for (const name of ['og:title', 'og:description', 'og:url', 'og:site_name', 'og:image:alt']) assert.match(html, new RegExp(`property="${name}" content="[^"]+"`));
+    assert.match(html, new RegExp(`property="og:locale" content="${ogLocale}"`));
+    assert.match(html, /name="twitter:card" content="summary_large_image"/);
+    const image = html.match(/property="og:image" content="([^"]+)"/)?.[1];
+    assert.ok(image, 'og:image missing');
+    const url = new URL(image);
+    assert.equal(url.pathname, `/og-${locale}.png`);
+    assert.match(html, new RegExp(`name="twitter:image" content="${image.replaceAll('.', '\.')}"`));
+    await access('dist' + url.pathname);
+  }
+});
