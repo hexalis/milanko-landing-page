@@ -17,7 +17,7 @@ test('the question leads to evidence, then the event, then the late invitation',
   await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const route of ['/', '/en/']) {
     await page.goto(route);
-    await page.locator('.hero-actions .primary').click();
+    await page.locator('.hero-actions [href="#observa"]').click();
     const desk = page.locator('#case-desk');
     const invitation = page.locator('[data-invitation]');
     for (const [topic, direction, key, example, verdict] of [

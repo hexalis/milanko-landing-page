@@ -5,8 +5,8 @@ interface Props { copy: CollectionEntry<'pages'>['data']['investigation'] }
 const { copy } = Astro.props;
 const regions = Object.keys(places) as Place[];
 ---
-<section class="desk" id="case-desk" aria-label={copy.preview} data-copy={JSON.stringify(copy)}>
-  <div class="desk-bar"><span>{copy.sample}</span><span data-counter aria-hidden="true">01 / 03</span></div>
+<section class="desk" id="case-desk" aria-label={copy.preview} data-copy={JSON.stringify(copy)} data-step="1">
+  <div class="desk-bar"><span>{copy.sample}</span><span class="desk-meta" aria-hidden="true"><span class="desk-progress"><i></i><i></i><i></i></span><span data-counter>01 / 03</span></span></div>
   <form data-builder hidden>
     <fieldset>
       <legend>{copy.subject}</legend>
@@ -15,7 +15,7 @@ const regions = Object.keys(places) as Place[];
     <fieldset class="question-options">
       <legend>{copy.filter}</legend>
       {copy.questions.map((questions, topic) => <div data-question-set={topic} hidden={topic === 0}>
-        {questions.map((question, direction) => <button class="question-choice" name="direction" type="submit" value={direction}>{question}<span aria-hidden="true">→</span></button>)}
+        {questions.map((question, direction) => <button class="question-choice" name="direction" type="submit" value={direction} style={`--i:${direction}`}>{question}<span aria-hidden="true">→</span></button>)}
       </div>)}
     </fieldset>
   </form>
@@ -68,6 +68,7 @@ const regions = Object.keys(places) as Place[];
   const buttons = [...desk.querySelectorAll<HTMLButtonElement>('[data-region]')];
   const atlas = document.querySelector<HTMLDetailsElement>('[data-atlas]')!;
   const invite = document.querySelector<HTMLElement>('[data-invitation]')!;
+  const setStep = (step: 1 | 2 | 3) => { desk.dataset.step = String(step); get('[data-counter]').textContent = '0' + step + ' / 03'; };
   let selected: Place | undefined;
   let direction: 0 | 1 | 2 = 0;
   function query() {
@@ -84,7 +85,7 @@ const regions = Object.keys(places) as Place[];
     get('[data-inspection]').hidden = true;
     get('[data-complete]').hidden = true;
     builder.hidden = false;
-    get('[data-counter]').textContent = '01 / 03';
+    setStep(1);
     showQuestions();
     document.querySelector<HTMLButtonElement>('#reset-view:not([hidden])')?.click();
     atlas.open = false;
@@ -117,7 +118,7 @@ const regions = Object.keys(places) as Place[];
     get('[data-feedback]').hidden = true;
     builder.hidden = true;
     get('[data-inspection]').hidden = false;
-    get('[data-counter]').textContent = '02 / 03';
+    setStep(2);
     get('[data-case-question]').focus();
   });
   function classify([low, high, value]: readonly [number, number, number]) {
@@ -169,7 +170,7 @@ const regions = Object.keys(places) as Place[];
     get('[data-verdict]').textContent = place.dataset.name!;
     get('[data-inspection]').hidden = true;
     get('[data-complete]').hidden = false;
-    get('[data-counter]').textContent = '03 / 03';
+    setStep(3);
     get('[data-verdict]').focus();
   });
   for (const button of desk.querySelectorAll('[data-reset]')) button.addEventListener('click', () => {
@@ -179,23 +180,39 @@ const regions = Object.keys(places) as Place[];
   });
 </script>
 <style>
-  .desk { margin:1.8rem 0 2.5rem; color:var(--ink); background:linear-gradient(115deg,#0c1424fa,#090f1ef5 72%); border-block:1px solid #56637a; }
-  .desk-bar { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.7rem 0; border-bottom:1px solid var(--space-border); color:var(--atmosphere); font:.74rem/1.4 var(--font-mono); }
-  .desk-bar span:first-child { display:flex; align-items:center; gap:.6rem; }
-  .desk-bar span:first-child::before { content:''; width:.52rem; height:.52rem; background:var(--anomaly); border-radius:50%; }
+  .desk { --pad:clamp(1.1rem,2.4vw,1.7rem); margin:1.8rem 0 2.5rem; padding:0 var(--pad); color:var(--ink); background:linear-gradient(145deg,#111d33f5 0%,#0a1222f7 62%,#0f1a2ef5 100%); border:1px solid #74a4ca4d; border-radius:14px; box-shadow:0 22px 55px #0207167a,inset 0 1px #cae7ff1a; overflow:hidden; }
+  .desk-bar { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-inline:calc(-1 * var(--pad)); padding:.85rem var(--pad); background:#0a1324a8; border-bottom:1px solid #74a4ca33; color:var(--atmosphere); font:.74rem/1.4 var(--font-mono); }
+  .desk-bar > span:first-child { display:flex; align-items:center; gap:.6rem; }
+  .desk-bar > span:first-child::before { content:''; width:.52rem; height:.52rem; background:var(--anomaly); border-radius:50%; }
+  .desk-meta { display:flex; align-items:center; gap:.8rem; }
+  .desk-progress { display:flex; gap:.3rem; }
+  .desk-progress i { width:1.5rem; height:3px; border-radius:2px; background:#8bd5ff2e; transition:background 320ms var(--ease-out); }
+  .desk[data-step="1"] .desk-progress i:first-child,.desk[data-step="2"] .desk-progress i:nth-child(-n+2),.desk[data-step="3"] .desk-progress i { background:var(--anomaly); }
+  /* Each step, each set of questions and each reading eases in instead of swapping. */
+  @keyframes desk-rise { from { opacity:0; transform:translateY(12px); } }
+  form:not([hidden]),[data-inspection]:not([hidden]),[data-complete]:not([hidden]),.record-detail:not([hidden]) { animation:desk-rise 420ms var(--ease-out) both; }
+  [data-question-set]:not([hidden]) .question-choice { animation:desk-rise 420ms var(--ease-out) both; animation-delay:calc(var(--i,0) * 60ms); }
+  :global(html[data-motion=paused]) .desk :is(form,[data-inspection],[data-complete],.record-detail,.question-choice) { animation:none; }
   form,[data-inspection],[data-complete],noscript { display:block; padding:1.5rem 0; }
   [hidden] { display:none!important; }
   fieldset { border:0; margin:0; padding:0; min-width:0; }
   legend { padding:0; font-weight:600; margin-bottom:.65rem; }
-  .themes { display:inline-flex; flex-wrap:wrap; gap:.35rem; padding:.25rem; border:1px solid #43536b; border-radius:2rem; background:#0a1120; }
-  .themes label { position:relative; min-height:44px; display:grid; place-items:center; padding:.55rem 1.1rem; border-radius:2rem; cursor:pointer; color:var(--muted); }
-  .themes label:has(:checked) { background:var(--atmosphere); color:var(--space-deep); }
+  .themes { position:relative; display:inline-grid; grid-auto-flow:column; grid-auto-columns:1fr; padding:.25rem; border:1px solid #43536b; border-radius:2rem; background:#0a1120; }
+  /* The pill slides under the chosen topic. */
+  .themes::before { content:''; position:absolute; top:.25rem; bottom:.25rem; left:.25rem; width:calc(50% - .25rem); border-radius:2rem; background:var(--atmosphere); transition:transform 360ms var(--ease-out); }
+  .themes:has(label:nth-child(2) :checked)::before { transform:translateX(100%); }
+  .themes label { position:relative; min-height:44px; display:grid; place-items:center; padding:.55rem 1.4rem; border-radius:2rem; cursor:pointer; color:var(--muted); font-weight:500; transition:color 240ms var(--ease-out); }
+  .themes label:hover { color:var(--ink); }
+  .themes label:has(:checked) { color:var(--space-deep); }
   .themes input { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; }
   .themes label:focus-within { outline:2px solid var(--anomaly); outline-offset:2px; }
   .question-options { margin-top:1.5rem; }
-  .question-choice { width:100%; display:flex; align-items:center; justify-content:space-between; gap:1rem; min-height:52px; padding:1rem .15rem; text-align:left; background:none; border:0; border-top:1px solid #34445b; font:1.2rem/1.35 var(--font-serif); }
-  .question-choice span { display:grid; place-items:center; width:1.9rem; height:1.9rem; flex:none; border:1px solid #536273; border-radius:50%; color:var(--anomaly); }
-  .question-choice:hover,.question-choice:focus-visible { color:var(--atmosphere); }
+  .question-choice { width:calc(100% + 1.3rem); margin-inline:-.65rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; min-height:60px; padding:1rem .65rem; text-align:left; background:linear-gradient(90deg,#8bd5ff14,#8bd5ff00) no-repeat 0 0/0% 100%; border:0; border-top:1px solid #34445b; font:1.2rem/1.35 var(--font-serif); transition:background-size 360ms var(--ease-out),color 200ms; }
+  .question-choice span { display:grid; place-items:center; width:2.1rem; height:2.1rem; flex:none; border:1px solid #536273; border-radius:50%; color:var(--anomaly); transition:transform 280ms var(--ease-out),background 200ms,color 200ms,border-color 200ms; }
+  .question-choice:hover,.question-choice:focus-visible { color:var(--atmosphere); background-size:100% 100%; }
+  .question-choice:hover span,.question-choice:focus-visible span { transform:translateX(4px); background:var(--anomaly); border-color:var(--anomaly); color:var(--space-deep); }
+  .question-choice:active span { transform:translateX(7px) scale(.94); }
+  .question-choice:focus-visible { outline-offset:-3px; }
   h3 { margin:0 0 .7rem; font:400 clamp(1.65rem,3vw,2.25rem)/1.12 var(--font-serif); }
   .case-question { font:1.2rem/1.42 var(--font-serif); margin:.35rem 0 1rem; }
   .notebook p,dd { line-height:1.5; }
@@ -206,7 +223,10 @@ const regions = Object.keys(places) as Place[];
   .record-head,.record { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.7fr) minmax(0,1fr) .8rem; align-items:center; gap:.4rem; padding:.55rem clamp(.55rem,1vw,.85rem); }
   .record-head { font-size:.75rem; color:var(--muted); }
   .record-list { list-style:none; margin:0; padding:0; display:grid; gap:.45rem; }
-  .record { width:100%; min-height:59px; text-align:left; background:#142035; border:1px solid #40536d; border-radius:5px; color:var(--ink); cursor:pointer; }
+  .record { width:100%; min-height:59px; text-align:left; background:#142035; border:1px solid #40536d; border-radius:5px; color:var(--ink); cursor:pointer; transition:background 200ms,border-color 200ms,transform 140ms var(--ease-out); }
+  .record:active { transform:scale(.99); }
+  .record i { transition:transform 240ms var(--ease-out); }
+  .record:hover i,.record[aria-pressed=true] i { transform:translateX(3px); }
   .record:hover,.record:focus-visible { background:#1d3048; border-color:var(--atmosphere); }
   .record[aria-pressed=true] { border-color:var(--anomaly); background:#222737; }
   .record-name { font-weight:600; line-height:1.3; }

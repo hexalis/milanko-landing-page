@@ -13,6 +13,7 @@ const objects = copy.objects;
   <div class="observatory-field" id="observatory-field" aria-label={copy.viewerLabel}>
     <div class="viewer-hud"><div class="observatory-tools"><button id="telescope-toggle" type="button" aria-controls="observatory-field" aria-describedby="lens-help" aria-pressed="false" data-on={copy.telescopeOn} data-off={copy.telescopeOff} hidden><svg class="telescope-icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="13" cy="13" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m19.5 19.5 8 8M8.5 12a4.5 4.5 0 0 1 4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="telescope-label">{copy.telescopeOn}</span></button></div><span><b id="discovery-count">00</b> / 04 <span class="hud-label">{locale === 'es' ? 'DESCUBIERTOS' : 'DISCOVERED'}</span></span></div>
     <svg class="sky-chart" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width=".7"><path d="M70 110 150 70 210 145 290 115M150 70 165 190M780 370 840 420 910 355 950 450M100 460 180 500 280 440 350 490"/><circle cx="500" cy="300" r="220" stroke-dasharray="2 14"/><path d="M500 60V540M100 300H900" stroke-dasharray="1 12"/></g><g fill="currentColor">{[[70,110],[150,70],[210,145],[290,115],[165,190],[780,370],[840,420],[910,355],[950,450],[100,460],[180,500],[280,440],[350,490]].map(([cx,cy]) => <circle cx={cx} cy={cy} r="2" />)}</g></svg>
+    <svg class="roadmap" aria-hidden="true"><path pathLength="1" /></svg>
     <div class="observatory-sky" aria-hidden="true"></div>
     <div class="observatory-stars" aria-hidden="true"></div>
     <div class="observatory-comet" aria-hidden="true"></div>
@@ -48,7 +49,7 @@ const objects = copy.objects;
   telescope.addEventListener('click', () => {
     active = !active;
     field.classList.toggle('is-active', active);
-    if (!active) {
+    if (!active && !field.classList.contains('is-complete')) {
       detail.hidden = true;
       for (const button of buttons) {
         button.classList.remove('is-found');
@@ -92,10 +93,18 @@ const objects = copy.objects;
     width = field.clientWidth; height = field.clientHeight;
     centers = buttons.map(button => [button.offsetLeft, button.offsetTop]);
     x = targetX = width * relativeX; y = targetY = height * relativeY;
+    if (field.classList.contains('is-complete')) link();
     if (!frame) frame = requestAnimationFrame(draw);
   }).observe(field);
+  const route = ['milanko', 'tierra', 'senales', 'datos'].map(id => buttons.findIndex(button => button.dataset.discovery === id));
+  const roadmap = field.querySelector('.roadmap');
+  const link = () => {
+    roadmap.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    roadmap.firstElementChild.setAttribute('d', 'M' + route.map(index => centers[index].join(' ')).join('L') + 'Z');
+  };
   const draw = () => {
     frame = 0;
+    const done = discoveries.size === buttons.length;
     const factor = reduced.matches ? 1 : .22;
     x += (targetX - x) * factor; y += (targetY - y) * factor;
     field.style.setProperty('--light-x', (x / width * 100).toFixed(2) + '%');
@@ -103,10 +112,20 @@ const objects = copy.objects;
     const radius = width < 760 ? 105 : 160;
     buttons.forEach((button, index) => {
       const [centerX, centerY] = centers[index];
-      const found = active && Math.hypot(centerX - x, centerY - y) < radius;
+      const found = done || (active && Math.hypot(centerX - x, centerY - y) < radius);
       button.classList.toggle('is-found', found);
-      if (found) discoveries.add(button.dataset.discovery);
+      // What the lens has found stays faintly on the chart, so the count matches what the visitor sees.
+      if (found) { discoveries.add(button.dataset.discovery); button.classList.add('is-known'); }
     });
+    // All four found: the lens is no longer needed. It is put away for good and the whole chart shows, joined up.
+    if (!done && discoveries.size === buttons.length) {
+      link();
+      field.classList.add('is-complete');
+      buttons.forEach(button => button.classList.add('is-found'));
+      const hadFocus = document.activeElement === telescope;
+      telescope.hidden = true;
+      if (hadFocus) buttons[route[0]].focus({ preventScroll: true });
+    }
     document.querySelector('#discovery-count').textContent = String(discoveries.size).padStart(2, '0');
     if (Math.abs(targetX - x) + Math.abs(targetY - y) > .5) frame = requestAnimationFrame(draw);
   };
@@ -224,5 +243,33 @@ const objects = copy.objects;
   .discovery-tierra .discovery-orbit::after{content:'';position:absolute;top:4px;left:14px;width:6px;height:4px;background:#c9edff;box-shadow:0 0 10px #8bd5ff}
   .discovery-name{font-family:var(--font-mono);font-size:12px;letter-spacing:.03em}
   .observatory-tools button{background:linear-gradient(135deg,#294761,#142238);border-color:#8bd5ff88;box-shadow:inset 0 1px #ffffff12,0 8px 26px #0003}
+  /* Seamless with the journey above: no rule, and the sky starts in the page's own night. */
+  .observatory{border-top:0;background:linear-gradient(180deg,var(--space-deep) 0%,#060b19 16%,#060b19 70%,#0e1830 100%)}
+  /* The lens is the pointer while it is in use; found bodies and the tools keep a hand. */
+  .observatory-field.is-active{cursor:none}
+  .observatory-field.is-active .viewer-hud button,.observatory-field.is-active .discovery.is-found,.observatory-field.is-active .discovery:focus-visible{cursor:pointer}
+  .observatory-field.is-ready .discovery.is-known:not(.is-found):not(:focus-visible) .discovery-orbit,.observatory-field.is-ready .discovery.is-known:not(.is-found):not(:focus-visible) .discovery-core{opacity:.42}
+  .observatory-field.is-ready .discovery.is-known:not(.is-found):not(:focus-visible) .discovery-name{opacity:.7}
+  /* Glass: a soft highlight, and the lens settles into place when it is taken out. */
+  .observatory-reticle{background:radial-gradient(circle at 30% 26%,#ffffff1c,transparent 46%);transform:translate(-50%,-50%) scale(.82);transition:opacity .4s,transform .55s var(--ease-out)}
+  .observatory-field.is-active .observatory-reticle{transform:translate(-50%,-50%) scale(1)}
+  .viewer-hud b{transition:color .4s}
+  .observatory-field.is-complete .viewer-hud b{color:var(--anomaly);text-shadow:0 0 14px #ff8a4c88}
+  .viewer-hud .observatory-tools button{border-radius:4px;transition:background 200ms,border-color 200ms,color 200ms,transform 140ms var(--ease-out)}
+  .viewer-hud .observatory-tools button:active{transform:scale(.97)}
+  @media(prefers-reduced-motion:reduce){.observatory-reticle{transition:none}}
   @media(max-width:760px){.observatory-field{width:calc(100% - 24px);border-radius:12px;height:clamp(405px,76svh,570px)}.viewer-hud{padding:11px 14px;font-size:8px;letter-spacing:.04em;gap:10px}.hud-label{display:none}.observatory-reticle{width:136px}.observatory-coordinate{max-width:90%;font-size:8px}.discovery-name{font-size:10px}}
+  /* The whole chart: shown once the four modules are found. No lens, the sky lit evenly, one line through the modules. */
+  .roadmap{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;opacity:0;transition:opacity .6s}
+  .roadmap path{fill:none;stroke:#ffb789;stroke-width:1.2;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 6px #ff8a4c99)}
+  .observatory-field.is-complete .roadmap{opacity:.85}
+  .observatory-field.is-complete .roadmap path{stroke-dashoffset:0;transition:stroke-dashoffset 2.2s var(--ease-in-out) .3s}
+  .observatory-field.is-complete{cursor:auto}
+  .observatory-field.is-complete .discovery{cursor:pointer}
+  .observatory-field.is-complete .observatory-reticle,.observatory-field.is-complete .observatory-beam{opacity:0}
+  .observatory-field.is-complete .observatory-reveal{mask-image:none;opacity:.38;transition:opacity 1.2s}
+  .observatory-field.is-complete .observatory-nebula{mask-image:none;opacity:.5;transition:opacity 1.2s}
+  .observatory-field.is-complete .sky-chart{opacity:.12;transition:opacity .8s}
+  @media(prefers-reduced-motion:reduce){.observatory-field.is-complete .roadmap path{transition:none}}
+  :global(html[data-motion=paused]) .observatory-field.is-complete .roadmap path{transition:none}
 </style>

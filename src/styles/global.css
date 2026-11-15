@@ -180,3 +180,12 @@ nav a:hover::after,nav a:focus-visible::after{transform:scaleX(1)}
 .question-list summary:hover{background:#8bd5ff08}
 .footer-bottom{border-image:linear-gradient(90deg,#ff8a4c66,#8bd5ff33,transparent) 1}
 @media(max-width:760px){.header-inner{display:grid;grid-template-columns:1fr auto;row-gap:0;padding-top:18px;padding-bottom:8px}.header-inner nav{grid-column:1/-1;grid-row:2;justify-content:space-between;gap:12px;font-size:12px;margin-top:8px}.header-inner nav a:first-child{display:block}.header-inner .header-actions{grid-column:2;grid-row:1}.hero{padding-top:156px}.closing-emblem{transform:scale(.85);margin-bottom:18px}.question-list summary{padding-inline:10px;gap:12px}.question-list p{padding-left:36px}.footer-top p{margin-left:0}}
+/* Secondary hero action: the same shape as the primary, drawn as an outline. */
+.button.ghost{border:1px solid #8bd5ff55;background:#0a13248c;color:var(--ink);backdrop-filter:blur(6px);transition:transform 140ms var(--ease-out),background 200ms,border-color 200ms}
+.button.ghost span{color:var(--anomaly);transition:transform 240ms var(--ease-out)}
+@media(hover:hover) and (pointer:fine){.button.ghost:hover{border-color:var(--atmosphere);background:#8bd5ff14}.button.ghost:hover span{transform:translateY(3px)}}
+/* Sections flow into each other: the Earth scene fades into the night before the next section starts, and the
+   closing glow dissolves before its edges instead of stopping at them. */
+.earth-journey::after{content:'';position:absolute;inset:auto 0 0;height:min(46svh,420px);z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,var(--space-deep) 88%)}
+.closing::after{mask-image:linear-gradient(180deg,transparent,#000 28%,#000 68%,transparent)}
+.closing{background:linear-gradient(180deg,#0e1830 0%,#101a33 45%,#0e1830 100%)}
